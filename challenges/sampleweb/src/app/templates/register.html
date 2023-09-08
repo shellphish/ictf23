@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+</head>
+<body>
+
+<h2>Register</h2>
+
+<form id="registerForm">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <div>
+        <input type="submit" value="Register">
+    </div>
+</form>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevents the default form submission
+        
+        const data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+        };
+        
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            // You can also redirect the user or update the DOM as needed
+        })
+        .catch(error => {
+            alert('Error:', error);
+        });
+    });
+</script>
+
+</body>
+</html>

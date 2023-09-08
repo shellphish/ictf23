@@ -1,0 +1,6 @@
+FROM mariadb:11.1.2-jammy
+
+ENV MYSQL_ROOT_PASSWORD=ASeriousPassword
+ENV MYSQL_DATABASE=samplewebdb
+ENV MYSQL_USER=samplewebuser
+ENV MYSQL_PASSWORD=ASeriousPassword

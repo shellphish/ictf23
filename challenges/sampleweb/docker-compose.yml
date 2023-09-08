@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db:
+    build: 
+      dockerfile: Dockerfile-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ASeriousPassword
+      MYSQL_DATABASE: samplewebdb
+      MYSQL_USER: samplewebuser
+      MYSQL_PASSWORD: ASeriousPassword
+  web:
+    build: 
+      dockerfile: Dockerfile-web
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  

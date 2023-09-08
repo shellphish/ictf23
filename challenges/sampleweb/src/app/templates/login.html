@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+
+<h2>Login</h2>
+
+<form id="loginForm">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <div>
+        <input type="submit" value="Login">
+    </div>
+</form>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevents the default form submission
+        
+        const data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+        };
+        
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                window.location.href = "/";  // Redirect to the home page on successful login
+            } else {
+                alert(data.message);  // Display the error message from the API
+            }
+        })
+        .catch(error => {
+            alert('Error:', error);
+        });
+    });
+</script>
+
+</body>
+</html>

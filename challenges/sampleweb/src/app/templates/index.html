@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SampleWeb</title>
+</head>
+<body>
+
+{% if current_user.is_authenticated %}  <!-- Check if user is authenticated -->
+    <h2>Welcome, {{ current_user.username }}!</h2>
+    <p>
+        <a href="/documents">Manage Documents</a>
+        <a href="/logout">Logout</a>
+    </p>
+{% else %}
+    <h2>Sample Web</h2>
+    <p>
+        <a href="/register">Register</a> | 
+        <a href="/login">Log in</a>
+    </p>
+{% endif %}
+
+</body>
+</html>

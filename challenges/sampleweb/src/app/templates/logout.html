@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logout</title>
+</head>
+<body>
+
+<h2>Logout</h2>
+
+<form id="logoutForm">
+    <div>
+        <input type="submit" value="Logout">
+    </div>
+</form>
+
+<script>
+    document.getElementById('logoutForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevents the default form submission
+        
+        fetch('/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                window.location.href = "/";  // Redirect to the home page on successful login
+            } else {
+                alert(data.message);  // Display the error message from the API
+            }
+        })
+        .catch(error => {
+            alert('Error:', error);
+        });
+    });
+</script>
+
+</body>
+</html>

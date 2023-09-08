@@ -1,0 +1,37 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11-slim
+
+# Copies the flag
+COPY ./src/flag.txt /flag.txt
+
+RUN chmod 644 /flag.txt
+
+COPY ./src/serve.sh /serve.sh
+
+RUN useradd -u 31337 -ms /bin/bash challenge
+# Prevents the user from writing to the home directory
+RUN chown root:root /home/challenge
+RUN chmod 755 /home/challenge
+
+RUN mkdir /tmp/app
+RUN chown challenge:challenge /tmp/app
+RUN chmod 755 /tmp/app
+
+RUN mkdir /app
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the application code over
+COPY ./src/app /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r /app/requirements.txt
+
+USER challenge
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Run app.py when the container launches
+CMD ["/bin/bash", "/serve.sh"]

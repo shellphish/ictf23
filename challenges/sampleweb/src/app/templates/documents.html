@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Operations</title>
+</head>
+<body>
+
+<h2>Document Operations</h2>
+
+<!-- Add a document with text input -->
+<h3>Add Document</h3>
+<form id="addDocumentForm">
+    <div>
+        <label for="documentTitle">Document Title:</label>
+        <input type="text" id="documentTitle" name="documentTitle" required>
+        <br />
+        <label for="documentContent">Document Content:</label>
+        <textarea id="documentContent" name="documentContent" required></textarea>
+    </div>
+    <div>
+        <input type="submit" value="Add Document">
+    </div>
+</form>
+
+<!-- Read a document -->
+<h3>Read Document</h3>
+<form id="readDocumentForm">
+    <div>
+        <label for="documentId">Document ID:</label>
+        <input type="text" id="documentId" name="documentId" required>
+    </div>
+    <div>
+        <input type="submit" value="Read Document">
+    </div>
+</form>
+
+<!-- Remove a document -->
+<h3>Remove Document</h3>
+<form id="removeDocumentForm">
+    <div>
+        <label for="documentId">Document ID:</label>
+        <input type="text" id="documentId" name="documentId" required>
+    </div>
+    <div>
+        <input type="submit" value="Remove Document">
+    </div>
+</form>
+
+<!-- Add a file -->
+<h3>Add File</h3>
+<form id="addFileForm">
+    <div>
+        <label for="file">Choose a file:</label>
+        <input type="file" id="file" name="file" required>
+    </div>
+    <div>
+        <input type="submit" value="Add File">
+    </div>
+</form>
+
+<!-- Add a document with a file input -->
+<h3>Add Document from File</h3>
+<form id="addDocumentFileForm">
+    <div>
+        <label for="documentFromFileTitle">Document Title:</label>
+        <input type="text" id="documentFromFileTitle" name="documentFromFileTitle" required>
+        <br />
+        <label for="documentFilename">Choose a filename:</label>
+        <input type="text" id="documentFilename" name="documentFilename" required>
+    </div>
+    <div>
+        <input type="submit" value="Add Document from File">
+    </div>
+</form>
+
+<h2>{{ current_user.username }}'s Documents</h2>
+
+{% if documents|length > 0 %}  <!-- Check if there are any documents for the user -->
+    <ul>
+    {% for doc in documents %}
+        <li>
+            <strong>Id:</strong> {{ doc.id }}
+            <strong>Title:</strong> {{ doc.title }}<br>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no documents.</p>
+{% endif %}
+
+<!-- Scripts -->
+
+<script>
+    // Example script for handling 'Add Document' form submission using Fetch API
+    document.getElementById('addDocumentForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const data = {
+            title: document.getElementById('documentTitle').value,
+            content: document.getElementById('documentContent').value
+        };
+        
+        fetch('/add_document', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch(error => {
+            alert('Error:', error);
+        });
+    });
+
+    // Example script for handling 'Read Document' form submission using Fetch API
+    document.getElementById('readDocumentForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const documentId = document.getElementById('documentId').value;
+        
+        fetch(`/read_document/${documentId}`, {  // Using a template string to insert the ID into the URL
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Title: " + data.title + "\nContent: " + data.content);
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error:', error);
+        });
+    });
+
+    // Example script for handling 'Remove Document' form submission using Fetch API
+    document.getElementById('removeDocumentForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const documentId = document.getElementById('documentId').value;
+        
+        fetch(`/remove_document/${documentId}`, {  // Using a template string to insert the ID into the URL
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Document successfully removed");
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error:', error);
+        });
+    });
+
+    // Example script for handling 'Add File' form submission using Fetch API
+    document.getElementById('addFileForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+
+        const reader = new FileReader();
+
+        reader.onloadend = async function() {
+            const base64String = reader.result.replace(/^data:.+;base64,/, '');
+            const payload = {
+                fileName: file.name,
+                fileContent: base64String
+            };
+
+            try {
+                const response = await fetch('/add_file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error("Error uploading the file:", error);
+            }
+        };
+        
+        reader.readAsDataURL(file);    
+    });
+
+    // Example script for handling 'Add Document From File' form submission using Fetch API
+    document.getElementById('addDocumentFileForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const data = {
+            filename: document.getElementById('documentFilename').value,
+            title: document.getElementById('documentFromFileTitle').value
+        };
+        
+        fetch(`/add_document_from_file`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Document " + data.id + " created");
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error:', error);
+        });
+    });
+</script>
+
+</body>
+</html>
