@@ -7,7 +7,7 @@ author: "zanardi"
 category: web
 description: "Find the flag. It's 'documented'!"
 value: 100
-type: application_target
+type: standard
 
 # The extra field provides additional fields for data during the install/sync commands/
 # Fields in extra can be used to supply additional information for other challenge types
@@ -18,12 +18,15 @@ type: application_target
 #     decay: 100
 #     minimum: 50
 
+### This cannot be used because CTFd does not support multi-component challenges    
+
 # Settings used for Dockerfile deployment
 # If not used, remove or set to null
 # If you have a Dockerfile set to .
 # If you have an imaged hosted on Docker set to the image url (e.g. python/3.8:latest, registry.gitlab.com/python/3.8:latest)
 # Follow Docker best practices and assign a tag
-image: .
+# image: .
+
 
 # Specify a protocol that should be used to connect to the running image
 # For example if the image is a website you can specify http or https
@@ -35,12 +38,12 @@ protocol: http
 # ssh is an ssh URI where the above image will be copied to and deployed (e.g. ssh://root@123.123.123.123
 # registry is a Docker registry tag (e.g registry://registry.example.com/test/image)
 # host can also be specified during the deploy process: `ctf challenge deploy challenge --host=ssh://root@123.123.123.123`
-host: null
+host: challenges.seclab.ucsb.edu
 
 # Optional settings
 
 # connection_info is used to provide a link, hostname, or instructions on how to connect to a challenge
-connection_info: null
+connection_info: http://challenges.seclab.ucsb.edu/sampleweb
 
 # healthcheck is a tool/script used to check a challenge
 # If connection_info was provided to CTFd when the challenge was installed, it will be passed to the healthcheck script:
@@ -117,24 +120,3 @@ state: visible
 # Specifies what version of the challenge specification was used.
 # Subject to change until ctfcli v1.0.0
 version: "0.1"
-
-extra:
-    application_spec: 
-        version: '3'
-        services:
-            db:
-                build: 
-                    dockerfile: Dockerfile-db
-                environment:
-                    MYSQL_ROOT_PASSWORD: ASeriousPassword
-                    MYSQL_DATABASE: samplewebdb
-                    MYSQL_USER: samplewebuser
-                    MYSQL_PASSWORD: ASeriousPassword
-            web:
-                build: 
-                    dockerfile: Dockerfile-web
-                ports:
-                    - "8080:8080"
-                depends_on:
-                    - db
-    application_name: sampleweb
