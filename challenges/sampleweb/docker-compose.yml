@@ -1,18 +1,28 @@
 version: '3'
 services:
-  db:
+  web:
     build: 
+      context: .
+      dockerfile: Dockerfile-web
+    ports:
+      - "11443:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    build:
+      context: . 
       dockerfile: Dockerfile-db
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ASeriousPassword
       MYSQL_DATABASE: samplewebdb
       MYSQL_USER: samplewebuser
       MYSQL_PASSWORD: ASeriousPassword
-  web:
-    build: 
-      dockerfile: Dockerfile-web
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
+    healthcheck:
+        test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect"]
+        timeout: 3s
+        interval: 5s
+        retries: 10
   

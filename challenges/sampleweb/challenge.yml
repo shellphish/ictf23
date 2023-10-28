@@ -38,12 +38,12 @@ protocol: http
 # ssh is an ssh URI where the above image will be copied to and deployed (e.g. ssh://root@123.123.123.123
 # registry is a Docker registry tag (e.g registry://registry.example.com/test/image)
 # host can also be specified during the deploy process: `ctf challenge deploy challenge --host=ssh://root@123.123.123.123`
-host: challenges.seclab.ucsb.edu
+host: null
 
 # Optional settings
 
 # connection_info is used to provide a link, hostname, or instructions on how to connect to a challenge
-connection_info: http://challenges.seclab.ucsb.edu/sampleweb
+connection_info: http://192.35.222.131:11443
 
 # healthcheck is a tool/script used to check a challenge
 # If connection_info was provided to CTFd when the challenge was installed, it will be passed to the healthcheck script:
