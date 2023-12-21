@@ -1,4 +1,4 @@
-# iCTF23
+# iCTF 23
 
 The 2023 iCTF is an educational challenge-based Capture The Flag competition focused on AI and Cybersecurity.
 The 2023 iCTF is sponsored by the [NSF AI ACTION Institute](https://action.ucsb.edu), and it is organized by the Women in Computer Science (WiCS) at UCSB together with [Shellphish](http://www.shellphish.net).
